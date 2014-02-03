@@ -1343,11 +1343,11 @@ void show_nandroid_advanced_backup_menu(const char *path, int other_sd)  //kange
 void show_nandroid_advanced_restore_menu(const char* path)
 {
     if (ensure_path_mounted(path) != 0) {
-        LOGE ("Can't mount sdcard\n");
+        LOGE ("Can't mount %s\n", path);
         return;
     }
 
-    static char* advancedheaders[] = {  "Choose an image to restore",
+    static char* advancedheaders[] = { "Choose an image to restore",
                                 "",
                                 "Choose an image to restore",
                                 "first. The next menu will",
@@ -1356,13 +1356,11 @@ void show_nandroid_advanced_restore_menu(const char* path)
                                 NULL
     };
 
-    char tmp[PATH_MAX];
-    sprintf(tmp, "%s/clockworkmod/backup/", path);
-    char* file = choose_file_menu(tmp, NULL, advancedheaders);
+    char* file = choose_file_menu(path, NULL, advancedheaders);
     if (file == NULL)
         return;
 
-    static char* headers[] = {  "Advanced Restore",
+    static char* headers[] = { "Advanced Restore",
                                 "",
                                 NULL
     };
@@ -1376,39 +1374,39 @@ void show_nandroid_advanced_restore_menu(const char* path)
                             NULL
     };
     
-    if (0 != get_partition_device("wimax", tmp)) {
+    if (0 != get_partition_device("wimax", path)) {
         // disable wimax restore option
         list[5] = NULL;
     }
 
-    static char* confirm_restore  = "Confirm restore?";
+    static char* confirm_restore = "Confirm restore?";
 
     int chosen_item = get_menu_selection(headers, list, 0, 0);
     switch (chosen_item)
     {
         case 0:
             if (confirm_selection(confirm_restore, "Yes - Restore boot"))
-                nandroid_restore(file, 1, 0, 0, 0, 0, 0);
+                nandroid_restore(file, 1, 0, 0, 0, 0, 0, 0);
             break;
         case 1:
             if (confirm_selection(confirm_restore, "Yes - Restore system"))
-                nandroid_restore(file, 0, 1, 0, 0, 0, 0);
+                nandroid_restore(file, 0, 1, 0, 0, 0, 0, 0);
             break;
         case 2:
             if (confirm_selection(confirm_restore, "Yes - Restore data"))
-                nandroid_restore(file, 0, 0, 1, 0, 0, 0);
+                nandroid_restore(file, 0, 0, 1, 0, 0, 0, 0);
             break;
         case 3:
             if (confirm_selection(confirm_restore, "Yes - Restore cache"))
-                nandroid_restore(file, 0, 0, 0, 1, 0, 0);
+                nandroid_restore(file, 0, 0, 0, 1, 0, 0, 0);
             break;
         case 4:
             if (confirm_selection(confirm_restore, "Yes - Restore sd-ext"))
-                nandroid_restore(file, 0, 0, 0, 0, 1, 0);
+                nandroid_restore(file, 0, 0, 0, 0, 1, 0, 0);
             break;
         case 5:
             if (confirm_selection(confirm_restore, "Yes - Restore wimax"))
-                nandroid_restore(file, 0, 0, 0, 0, 0, 1);
+                nandroid_restore(file, 0, 0, 0, 0, 0, 1, 0);
             break;
     }
 }
